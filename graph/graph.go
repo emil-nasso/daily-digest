@@ -4,6 +4,7 @@ import (
 	context "context"
 	"net/http"
 
+	sources "github.com/emil-nasso/daily-digest/sources"
 	"github.com/vektah/gqlgen/handler"
 )
 
@@ -32,17 +33,6 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handler(w, r)
 }
 
-func (app *App) Mutation_signIn(ctx context.Context, username string) (*Session, error) {
-	return nil, nil
-}
-
-func (app *App) Mutation_register(ctx context.Context, username string, password string) (*Session, error) {
-	return nil, nil
-}
-func (app *App) Query_users(ctx context.Context, input *UsersInput) ([]User, error) {
-	return nil, nil
-}
-
-func (app *App) User_secretField(ctx context.Context, obj *User) ([]string, error) {
-	return nil, nil
+func (app *App) Query_sources(context.Context) ([]sources.Source, error) {
+	return sources.Get(), nil
 }

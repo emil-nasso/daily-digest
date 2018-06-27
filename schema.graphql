@@ -1,16 +1,16 @@
-type User{
-  id: ID!
-  username: String!
-  password: String!
-  sessions: [Session!]!
-  #sources: [Source!]!
-}
+# type User{
+#   id: ID!
+#   username: String!
+#   password: String!
+#   sessions: [Session!]!
+#   #sources: [Source!]!
+# }
 
-type Session {
-  id: ID!
-  key: String!
-  user: User!
-}
+# type Session {
+#   id: ID!
+#   key: String!
+#   user: User!
+# }
 
 #type Digest {
 #  id: ID! @unique
@@ -20,13 +20,14 @@ type Session {
 #  sourceKey: String
 #}
 
-# type Source {
-#   id: ID! @unique
-#   name: String!
-#   description: String!
-#   url: String!
-#   entries: [Entry!]!
-# }
+type Source {
+    #id: ID! @unique
+    name: String!
+    description: String!
+    tags: [String!]!
+    #url: String!
+    #entries: [Entry!]!
+}
 
 # type Entry {
 #   id: ID! @unique
@@ -42,18 +43,18 @@ type Session {
 # Queries
 
 type Query {
-    #sources(sessionKey: String!): [Source!]!
-    users(input: UsersInput): [User!]!
+    sources(): [Source!]!
+    #users(input: UsersInput): [User!]!
 }
 
 # Mutations
 
-input UsersInput {
-    search: String
-}
+#input UsersInput {
+#    search: String
+#}
 
-type Mutation {
-    signIn(username: String!): Session
-    register(username: String!, password: String!): Session
+# type Mutation {
+    #signIn(username: String!): Session
+    #register(username: String!, password: String!): Session
     #addSource(sessionKey: String!, type: SourceType!, settings: String, maxEntries: Int!): Source
-}
+# }
