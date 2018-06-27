@@ -1,0 +1,59 @@
+type User{
+  id: ID!
+  username: String!
+  password: String!
+  sessions: [Session!]!
+  #sources: [Source!]!
+}
+
+type Session {
+  id: ID!
+  key: String!
+  user: User!
+}
+
+#type Digest {
+#  id: ID! @unique
+#  owner: User!
+#  maxEntries: Int
+#  source: Source!
+#  sourceKey: String
+#}
+
+# type Source {
+#   id: ID! @unique
+#   name: String!
+#   description: String!
+#   url: String!
+#   entries: [Entry!]!
+# }
+
+# type Entry {
+#   id: ID! @unique
+#   timePublished: DateTime!
+#   weight: Int
+#   title: String!
+#   content: String
+#   url: String
+#   source: Source!
+#   sourceKey: String
+# }
+
+# Queries
+
+type Query {
+    #sources(sessionKey: String!): [Source!]!
+    users(input: UsersInput): [User!]!
+}
+
+# Mutations
+
+input UsersInput {
+    search: String
+}
+
+type Mutation {
+    signIn(username: String!): Session
+    register(username: String!, password: String!): Session
+    #addSource(sessionKey: String!, type: SourceType!, settings: String, maxEntries: Int!): Source
+}
