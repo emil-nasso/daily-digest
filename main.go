@@ -7,8 +7,9 @@ import (
 	"log"
 	"net/http"
 
+	_ "github.com/emil-nasso/daily-digest/plugins"
+
 	"github.com/emil-nasso/daily-digest/server"
-	"github.com/emil-nasso/daily-digest/sources"
 	"github.com/emil-nasso/daily-digest/util"
 	"github.com/vektah/gqlgen/handler"
 )
@@ -42,12 +43,12 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	handler(w, r)
 }
 
-func (app *App) Query_sources(context.Context) ([]sources.Source, error) {
-	return sources.Get(), nil
+func (app *App) Query_sources(context.Context) ([]server.Source, error) {
+	return server.Get(), nil
 }
 
 func (app *App) Mutation_newDigest(ctx context.Context, input *server.NewDigestInput) (server.Digest, error) {
-	source := sources.GetById(*input.SourceId)
+	source := server.GetById(*input.SourceId)
 	if source == nil {
 		return server.Digest{}, errors.New("Invalid sourceId")
 	}

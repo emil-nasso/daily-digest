@@ -1,5 +1,5 @@
 {
-    "Source" : "github.com/emil-nasso/daily-digest/sources.Source",
+    "Source" : "github.com/emil-nasso/daily-digest/server.Source",
     "Digest" : "github.com/emil-nasso/daily-digest/server.Digest",
     "Entry" : "github.com/emil-nasso/daily-digest/server.Entry",
     "Daily" : "github.com/emil-nasso/daily-digest/server.Daily",

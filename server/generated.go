@@ -7,7 +7,6 @@ import (
 	context "context"
 	strconv "strconv"
 
-	sources "github.com/emil-nasso/daily-digest/sources"
 	graphql "github.com/vektah/gqlgen/graphql"
 	introspection "github.com/vektah/gqlgen/neelance/introspection"
 	query "github.com/vektah/gqlgen/neelance/query"
@@ -20,7 +19,7 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 
 type Resolvers interface {
 	Mutation_newDigest(ctx context.Context, input *NewDigestInput) (Digest, error)
-	Query_sources(ctx context.Context) ([]sources.Source, error)
+	Query_sources(ctx context.Context) ([]Source, error)
 	Query_digests(ctx context.Context) ([]Digest, error)
 	Query_daily(ctx context.Context, date *string) (Daily, error)
 }
@@ -457,7 +456,7 @@ func (ec *executionContext) _Query_sources(ctx context.Context, field graphql.Co
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.([]sources.Source)
+		res := resTmp.([]Source)
 		arr1 := graphql.Array{}
 		for idx1 := range res {
 			arr1 = append(arr1, func() graphql.Marshaler {
@@ -598,7 +597,7 @@ func (ec *executionContext) _Query___type(ctx context.Context, field graphql.Col
 var sourceImplementors = []string{"Source"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Source(ctx context.Context, sel []query.Selection, obj *sources.Source) graphql.Marshaler {
+func (ec *executionContext) _Source(ctx context.Context, sel []query.Selection, obj *Source) graphql.Marshaler {
 	fields := graphql.CollectFields(ec.Doc, sel, sourceImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
@@ -624,7 +623,7 @@ func (ec *executionContext) _Source(ctx context.Context, sel []query.Selection, 
 	return out
 }
 
-func (ec *executionContext) _Source_id(ctx context.Context, field graphql.CollectedField, obj *sources.Source) graphql.Marshaler {
+func (ec *executionContext) _Source_id(ctx context.Context, field graphql.CollectedField, obj *Source) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Source"
 	rctx.Args = nil
@@ -635,7 +634,7 @@ func (ec *executionContext) _Source_id(ctx context.Context, field graphql.Collec
 	return graphql.MarshalID(res)
 }
 
-func (ec *executionContext) _Source_name(ctx context.Context, field graphql.CollectedField, obj *sources.Source) graphql.Marshaler {
+func (ec *executionContext) _Source_name(ctx context.Context, field graphql.CollectedField, obj *Source) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Source"
 	rctx.Args = nil
@@ -646,7 +645,7 @@ func (ec *executionContext) _Source_name(ctx context.Context, field graphql.Coll
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Source_description(ctx context.Context, field graphql.CollectedField, obj *sources.Source) graphql.Marshaler {
+func (ec *executionContext) _Source_description(ctx context.Context, field graphql.CollectedField, obj *Source) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Source"
 	rctx.Args = nil
@@ -657,7 +656,7 @@ func (ec *executionContext) _Source_description(ctx context.Context, field graph
 	return graphql.MarshalString(res)
 }
 
-func (ec *executionContext) _Source_tags(ctx context.Context, field graphql.CollectedField, obj *sources.Source) graphql.Marshaler {
+func (ec *executionContext) _Source_tags(ctx context.Context, field graphql.CollectedField, obj *Source) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
 	rctx.Object = "Source"
 	rctx.Args = nil

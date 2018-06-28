@@ -1,6 +1,8 @@
-package sources
+package server
 
-import "fmt"
+import (
+	"fmt"
+)
 
 // Source represents a digest source
 type Source struct {
@@ -9,6 +11,11 @@ type Source struct {
 	Description string
 	Tags        []string
 	scraper     scraper
+	entries     []*Entry
+}
+
+func (s *Source) EntriesForDate(date string) []*Entry {
+	return nil
 }
 
 type scraper func() string
@@ -29,7 +36,7 @@ func GetById(id string) *Source {
 	return nil
 }
 
-func registerSource(id, name, description string, tags []string, scraper scraper) {
+func RegisterSource(id, name, description string, tags []string, scraper scraper) {
 	fmt.Printf("Registering source: %s\n", id)
 	source := Source{
 		ID:          id,

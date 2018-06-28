@@ -3,7 +3,6 @@ package server
 import (
 	"strconv"
 
-	sources "github.com/emil-nasso/daily-digest/sources"
 	"github.com/emil-nasso/daily-digest/util"
 )
 
@@ -11,14 +10,14 @@ import (
 
 type Digest struct {
 	ID     string
-	Source *sources.Source
+	Source *Source
 }
 
 type DigestService struct {
 	digests []Digest
 }
 
-func (s *DigestService) Create(source *sources.Source) *Digest {
+func (s *DigestService) Create(source *Source) *Digest {
 	d := Digest{
 		ID:     strconv.Itoa(len(s.digests) + 1),
 		Source: source,
