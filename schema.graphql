@@ -12,21 +12,37 @@
 #   user: User!
 # }
 
-#type Digest {
-#  id: ID! @unique
-#  owner: User!
-#  maxEntries: Int
-#  source: Source!
-#  sourceKey: String
-#}
+type Digest {
+    id: ID!
+    #owner: User!
+    source: Source!
+}
 
 type Source {
-    #id: ID! @unique
+    id: ID!
     name: String!
     description: String!
     tags: [String!]!
     #url: String!
     #entries: [Entry!]!
+}
+
+type Entry {
+	id: ID!
+	publishedAt: String!
+	title: String!
+	excerpt: String
+	url: String
+}
+
+type Daily {
+	date:    String
+	digests: [DailyDigest!]!
+}
+
+type DailyDigest {
+	digest:  Digest
+	entries: Entry
 }
 
 # type Entry {
@@ -44,6 +60,8 @@ type Source {
 
 type Query {
     sources(): [Source!]!
+    digests(): [Digest!]!
+    daily(date: String): Daily!
     #users(input: UsersInput): [User!]!
 }
 
@@ -53,8 +71,13 @@ type Query {
 #    search: String
 #}
 
-# type Mutation {
+type Mutation {
+    newDigest(input: NewDigestInput): Digest!
     #signIn(username: String!): Session
     #register(username: String!, password: String!): Session
     #addSource(sessionKey: String!, type: SourceType!, settings: String, maxEntries: Int!): Source
-# }
+}
+
+input NewDigestInput {
+    sourceId: String
+}

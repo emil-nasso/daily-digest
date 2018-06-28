@@ -1,7 +1,10 @@
 package sources
 
+import "fmt"
+
 // Source represents a digest source
 type Source struct {
+	ID          string
 	Name        string
 	Description string
 	Tags        []string
@@ -17,8 +20,19 @@ func Get() []Source {
 	return sources
 }
 
-func registerSource(name, description string, tags []string, scraper scraper) {
+func GetById(id string) *Source {
+	for _, s := range sources {
+		if s.ID == id {
+			return &s
+		}
+	}
+	return nil
+}
+
+func registerSource(id, name, description string, tags []string, scraper scraper) {
+	fmt.Printf("Registering source: %s\n", id)
 	source := Source{
+		ID:          id,
 		Name:        name,
 		Description: description,
 		Tags:        tags,
