@@ -1,7 +1,7 @@
 package util
 
-import "fmt"
+import "github.com/davecgh/go-spew/spew"
 
 func Dd(s interface{}) {
-	fmt.Printf("%+v", s)
+	spew.Dump(s)
 }

@@ -124,10 +124,7 @@ func (ec *executionContext) _Daily_digests(ctx context.Context, field graphql.Co
 			rctx := graphql.GetResolverContext(ctx)
 			rctx.PushIndex(idx1)
 			defer rctx.Pop()
-			if res[idx1] == nil {
-				return graphql.Null
-			}
-			return ec._DailyDigest(ctx, field.Selections, res[idx1])
+			return ec._DailyDigest(ctx, field.Selections, &res[idx1])
 		}())
 	}
 	return arr1
@@ -166,10 +163,7 @@ func (ec *executionContext) _DailyDigest_digest(ctx context.Context, field graph
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
 	res := obj.Digest
-	if res == nil {
-		return graphql.Null
-	}
-	return ec._Digest(ctx, field.Selections, res)
+	return ec._Digest(ctx, field.Selections, &res)
 }
 
 func (ec *executionContext) _DailyDigest_entries(ctx context.Context, field graphql.CollectedField, obj *DailyDigest) graphql.Marshaler {

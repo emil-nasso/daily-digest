@@ -2,8 +2,6 @@ package server
 
 import (
 	"strconv"
-
-	"github.com/emil-nasso/daily-digest/util"
 )
 
 // Digest
@@ -22,7 +20,6 @@ func (s *DigestService) Create(source *Source) *Digest {
 		ID:     strconv.Itoa(len(s.digests) + 1),
 		Source: source,
 	}
-	util.Dd(d)
 	s.digests = append(s.digests, d)
 	return &d
 }
@@ -42,68 +39,88 @@ type Entry struct {
 }
 
 type EntryService struct {
-	entries []Entry
 }
 
 func (s *EntryService) Seed() {
 
-	s.entries = []Entry{
-		Entry{
-			ID:          "1",
-			PublishedAt: "2018-01-01 10:00:01",
-			Title:       "The russians are coming",
-			Excerpt:     "Hide yoself, the ruskies are invading.",
-			URL:         "https://www.svtnyheter.se/theruskies.html",
-		},
-		Entry{
-			ID:          "2",
-			PublishedAt: "2018-01-02 10:00:01",
-			Title:       "The germans are coming",
-			Excerpt:     "Hide yoself, the germans are invading.",
-			URL:         "https://www.svtnyheter.se/zegermans.html",
-		},
-	}
+	rss := GetById("rss")
+	svt := GetById("svtnyheter")
+
+	svt.AddEntry(&Entry{
+		ID:          "1",
+		PublishedAt: "2018-01-01",
+		Title:       "The russians are coming",
+		Excerpt:     "Hide yoself, the russains are invading.",
+		URL:         "https://www.svtnyheter.se/theruskies.html",
+	})
+
+	svt.AddEntry(&Entry{
+		ID:          "2",
+		PublishedAt: "2018-01-01",
+		Title:       "The russians are retreated",
+		Excerpt:     "Hide yoself, the russian where just passing by.",
+		URL:         "https://www.svtnyheter.se/wearesafe.html",
+	})
+
+	svt.AddEntry(&Entry{
+		ID:          "3",
+		PublishedAt: "2018-01-02",
+		Title:       "The germans are coming",
+		Excerpt:     "Hide yoself, the germans are invading.",
+		URL:         "https://www.svtnyheter.se/germans.html",
+	})
+
+	rss.AddEntry(&Entry{
+		ID:          "4",
+		PublishedAt: "2018-01-01",
+		Title:       "Monday",
+		Excerpt:     "First day of the week!",
+		URL:         "http://www.example.com/blog/1.html",
+	})
+
+	rss.AddEntry(&Entry{
+		ID:          "5",
+		PublishedAt: "2018-01-02",
+		Title:       "Tuesday",
+		Excerpt:     "Second day of the week!",
+		URL:         "http://www.example.com/blog/2.html",
+	})
+
+	rss.AddEntry(&Entry{
+		ID:          "6",
+		PublishedAt: "2018-01-03",
+		Title:       "Wednesday",
+		Excerpt:     "Third day of the week!",
+		URL:         "http://www.example.com/blog/3.html",
+	})
+
 }
 
 // Daily
 
 type Daily struct {
 	Date    string
-	Digests []*DailyDigest
+	Digests []DailyDigest
 }
 
 type DailyDigest struct {
-	Digest  *Digest
+	Digest  Digest
 	Entries []*Entry
 }
+
 type DailiesService struct {
 }
 
 func (s *DailiesService) Get(date string, digestService *DigestService) Daily {
-	dailyDigests := make([]*DailyDigest, 0)
+	dailyDigests := make([]DailyDigest, 0)
+	digests := digestService.ListAll()
 
-	for _, digest := range digestService.ListAll() {
-		//entries := digest.Source.
-		entries := []*Entry{
-			&Entry{
-				ID:          "1",
-				PublishedAt: "2018-01-01 10:00:01",
-				Title:       "The russians are coming",
-				Excerpt:     "Hide yoself, the ruskies are invading.",
-				URL:         "https://www.svtnyheter.se/theruskies.html",
-			},
-			&Entry{
-				ID:          "2",
-				PublishedAt: "2018-01-02 10:00:01",
-				Title:       "The germans are coming",
-				Excerpt:     "Hide yoself, the germans are invading.",
-				URL:         "https://www.svtnyheter.se/zegermans.html",
-			},
+	for i := range digests {
+		d := DailyDigest{
+			Digest:  digests[i],
+			Entries: digests[i].Source.EntriesForDate(date),
 		}
-		dailyDigests = append(dailyDigests, &DailyDigest{
-			Digest:  &digest,
-			Entries: entries,
-		})
+		dailyDigests = append(dailyDigests, d)
 	}
 
 	return Daily{
