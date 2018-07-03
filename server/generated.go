@@ -1431,21 +1431,7 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 	return introspection.WrapType(t)
 }
 
-var parsedSchema = schema.MustParse(`# type User{
-#   id: ID!
-#   username: String!
-#   password: String!
-#   sessions: [Session!]!
-#   #sources: [Source!]!
-# }
-
-# type Session {
-#   id: ID!
-#   key: String!
-#   user: User!
-# }
-
-type Digest {
+var parsedSchema = schema.MustParse(`type Digest {
     id: ID!
     #owner: User!
     source: Source!
@@ -1456,8 +1442,6 @@ type Source {
     name: String!
     description: String!
     tags: [String!]!
-    #url: String!
-    #entries: [Entry!]!
 }
 
 type Entry {
@@ -1478,17 +1462,6 @@ type DailyDigest {
 	entries: Entry
 }
 
-# type Entry {
-#   id: ID! @unique
-#   timePublished: DateTime!
-#   weight: Int
-#   title: String!
-#   content: String
-#   url: String
-#   source: Source!
-#   sourceKey: String
-# }
-
 # Queries
 
 type Query {
@@ -1500,15 +1473,8 @@ type Query {
 
 # Mutations
 
-#input UsersInput {
-#    search: String
-#}
-
 type Mutation {
     newDigest(input: NewDigestInput): Digest!
-    #signIn(username: String!): Session
-    #register(username: String!, password: String!): Session
-    #addSource(sessionKey: String!, type: SourceType!, settings: String, maxEntries: Int!): Source
 }
 
 input NewDigestInput {
