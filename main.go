@@ -16,12 +16,12 @@ import (
 var app *App
 
 var digestService server.DigestService
-var dailiesService server.DailiesService
+var subscriptionService server.SubscriptionService
 var entriesService server.EntryService
 
 func init() {
 	digestService = server.DigestService{}
-	dailiesService = server.DailiesService{}
+	subscriptionService = server.SubscriptionService{}
 	entriesService = server.EntryService{}
 
 	app = &App{}
@@ -57,19 +57,18 @@ func (app *App) Query_sources(context.Context) ([]server.Source, error) {
 	return sources, nil
 }
 
-func (app *App) Mutation_newDigest(ctx context.Context, input *server.NewDigestInput) (server.Digest, error) {
+func (app *App) Mutation_newSubscription(ctx context.Context, input *server.NewSubscriptionInput) (server.Subscription, error) {
 	source := server.GetById(*input.SourceId)
 	if source == nil {
-		return server.Digest{}, errors.New("Invalid sourceId")
+		return server.Subscription{}, errors.New("Invalid sourceId")
 	}
-	return *digestService.Create(source), nil
+	return *subscriptionService.Create(source), nil
 }
 
-func (app *App) Query_digests(ctx context.Context) ([]server.Digest, error) {
-	digests := digestService.ListAll()
-	return digests, nil
+func (app *App) Query_subscriptions(ctx context.Context) ([]server.Subscription, error) {
+	return subscriptionService.ListAll(), nil
 }
 
-func (app *App) Query_daily(ctx context.Context, date *string) (server.Daily, error) {
-	return dailiesService.Get(*date, &digestService), nil
+func (app *App) Query_digests(ctx context.Context, date *string) ([]server.Digest, error) {
+	return digestService.Get(*date, &subscriptionService), nil
 }

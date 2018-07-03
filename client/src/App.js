@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 import GraphQL from './Graphql';
 import SourceAdder from './SourceAdder';
-import Digests from './Digests'
+import Subscriptions from './Subscriptions'
 
 class App extends Component {
 
@@ -13,11 +13,11 @@ class App extends Component {
     this.state = {
       message: 'hello world',
       sources: undefined,
-      digests: undefined
+      subscriptions: undefined
     };
 
     this.loadSources();
-    this.loadDigests();
+    this.loadSubscriptions();
   }
 
   loadSources(){
@@ -31,9 +31,9 @@ class App extends Component {
     }`).then((data) => this.setState({sources: data.data.sources}));
   }
   
-  loadDigests() {
-    this.graphQL.query(`query AllDigests {
-      digests {
+  loadSubscriptions() {
+    this.graphQL.query(`query AllSubscriptions {
+      subscriptions {
         id
         source{
           id
@@ -42,23 +42,17 @@ class App extends Component {
           tags
         }
       }
-    }`).then((data) => this.setState({digests: data.data.digests}));
+    }`).then((data) => this.setState({subscriptions: data.data.subscriptions}));
   }
 
   addSource(id) {
     this.graphQL.query(`mutation CreateDigest ($id: String!) {
-      newDigest(input: {
+      newSubscription(input: {
         sourceId: $id
       }) {
         id
-        source{
-          id
-          name
-          description
-          tags
-        }
       }
-    }`, { id }).then(() => {this.loadDigests()})
+    }`, { id }).then(() => {this.loadSubscriptions()})
   }
 
   render() {
@@ -69,7 +63,7 @@ class App extends Component {
         </header>
         <main>
           <SourceAdder sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
-          <Digests digests={this.state.digests}/>
+          <Subscriptions subscriptions={this.state.subscriptions}/>
         </main>
       </div>
     );

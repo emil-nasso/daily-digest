@@ -2,6 +2,6 @@
 
 package server
 
-type NewDigestInput struct {
+type NewSubscriptionInput struct {
 	SourceId *string `json:"sourceId"`
 }

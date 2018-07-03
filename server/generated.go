@@ -18,10 +18,10 @@ func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 }
 
 type Resolvers interface {
-	Mutation_newDigest(ctx context.Context, input *NewDigestInput) (Digest, error)
+	Mutation_newSubscription(ctx context.Context, input *NewSubscriptionInput) (Subscription, error)
 	Query_sources(ctx context.Context) ([]Source, error)
-	Query_digests(ctx context.Context) ([]Digest, error)
-	Query_daily(ctx context.Context, date *string) (Daily, error)
+	Query_subscriptions(ctx context.Context) ([]Subscription, error)
+	Query_digests(ctx context.Context, date *string) ([]Digest, error)
 }
 
 type executableSchema struct {
@@ -74,11 +74,11 @@ type executionContext struct {
 	resolvers Resolvers
 }
 
-var dailyImplementors = []string{"Daily"}
+var digestImplementors = []string{"Digest"}
 
 // nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Daily(ctx context.Context, sel []query.Selection, obj *Daily) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.Doc, sel, dailyImplementors, ec.Variables)
+func (ec *executionContext) _Digest(ctx context.Context, sel []query.Selection, obj *Digest) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, digestImplementors, ec.Variables)
 
 	out := graphql.NewOrderedMap(len(fields))
 	for i, field := range fields {
@@ -86,67 +86,11 @@ func (ec *executionContext) _Daily(ctx context.Context, sel []query.Selection, o
 
 		switch field.Name {
 		case "__typename":
-			out.Values[i] = graphql.MarshalString("Daily")
-		case "date":
-			out.Values[i] = ec._Daily_date(ctx, field, obj)
-		case "digests":
-			out.Values[i] = ec._Daily_digests(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	return out
-}
-
-func (ec *executionContext) _Daily_date(ctx context.Context, field graphql.CollectedField, obj *Daily) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Daily"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.Date
-	return graphql.MarshalString(res)
-}
-
-func (ec *executionContext) _Daily_digests(ctx context.Context, field graphql.CollectedField, obj *Daily) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Daily"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.Digests
-	arr1 := graphql.Array{}
-	for idx1 := range res {
-		arr1 = append(arr1, func() graphql.Marshaler {
-			rctx := graphql.GetResolverContext(ctx)
-			rctx.PushIndex(idx1)
-			defer rctx.Pop()
-			return ec._DailyDigest(ctx, field.Selections, &res[idx1])
-		}())
-	}
-	return arr1
-}
-
-var dailyDigestImplementors = []string{"DailyDigest"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _DailyDigest(ctx context.Context, sel []query.Selection, obj *DailyDigest) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.Doc, sel, dailyDigestImplementors, ec.Variables)
-
-	out := graphql.NewOrderedMap(len(fields))
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("DailyDigest")
-		case "digest":
-			out.Values[i] = ec._DailyDigest_digest(ctx, field, obj)
+			out.Values[i] = graphql.MarshalString("Digest")
+		case "subscription":
+			out.Values[i] = ec._Digest_subscription(ctx, field, obj)
 		case "entries":
-			out.Values[i] = ec._DailyDigest_entries(ctx, field, obj)
+			out.Values[i] = ec._Digest_entries(ctx, field, obj)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -155,20 +99,20 @@ func (ec *executionContext) _DailyDigest(ctx context.Context, sel []query.Select
 	return out
 }
 
-func (ec *executionContext) _DailyDigest_digest(ctx context.Context, field graphql.CollectedField, obj *DailyDigest) graphql.Marshaler {
+func (ec *executionContext) _Digest_subscription(ctx context.Context, field graphql.CollectedField, obj *Digest) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "DailyDigest"
+	rctx.Object = "Digest"
 	rctx.Args = nil
 	rctx.Field = field
 	rctx.PushField(field.Alias)
 	defer rctx.Pop()
-	res := obj.Digest
-	return ec._Digest(ctx, field.Selections, &res)
+	res := obj.Subscription
+	return ec._SourceSubscription(ctx, field.Selections, &res)
 }
 
-func (ec *executionContext) _DailyDigest_entries(ctx context.Context, field graphql.CollectedField, obj *DailyDigest) graphql.Marshaler {
+func (ec *executionContext) _Digest_entries(ctx context.Context, field graphql.CollectedField, obj *Digest) graphql.Marshaler {
 	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "DailyDigest"
+	rctx.Object = "Digest"
 	rctx.Args = nil
 	rctx.Field = field
 	rctx.PushField(field.Alias)
@@ -187,56 +131,6 @@ func (ec *executionContext) _DailyDigest_entries(ctx context.Context, field grap
 		}())
 	}
 	return arr1
-}
-
-var digestImplementors = []string{"Digest"}
-
-// nolint: gocyclo, errcheck, gas, goconst
-func (ec *executionContext) _Digest(ctx context.Context, sel []query.Selection, obj *Digest) graphql.Marshaler {
-	fields := graphql.CollectFields(ec.Doc, sel, digestImplementors, ec.Variables)
-
-	out := graphql.NewOrderedMap(len(fields))
-	for i, field := range fields {
-		out.Keys[i] = field.Alias
-
-		switch field.Name {
-		case "__typename":
-			out.Values[i] = graphql.MarshalString("Digest")
-		case "id":
-			out.Values[i] = ec._Digest_id(ctx, field, obj)
-		case "source":
-			out.Values[i] = ec._Digest_source(ctx, field, obj)
-		default:
-			panic("unknown field " + strconv.Quote(field.Name))
-		}
-	}
-
-	return out
-}
-
-func (ec *executionContext) _Digest_id(ctx context.Context, field graphql.CollectedField, obj *Digest) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Digest"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.ID
-	return graphql.MarshalID(res)
-}
-
-func (ec *executionContext) _Digest_source(ctx context.Context, field graphql.CollectedField, obj *Digest) graphql.Marshaler {
-	rctx := graphql.GetResolverContext(ctx)
-	rctx.Object = "Digest"
-	rctx.Args = nil
-	rctx.Field = field
-	rctx.PushField(field.Alias)
-	defer rctx.Pop()
-	res := obj.Source
-	if res == nil {
-		return graphql.Null
-	}
-	return ec._Source(ctx, field.Selections, res)
 }
 
 var entryImplementors = []string{"Entry"}
@@ -342,8 +236,8 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel []query.Selection
 		switch field.Name {
 		case "__typename":
 			out.Values[i] = graphql.MarshalString("Mutation")
-		case "newDigest":
-			out.Values[i] = ec._Mutation_newDigest(ctx, field)
+		case "newSubscription":
+			out.Values[i] = ec._Mutation_newSubscription(ctx, field)
 		default:
 			panic("unknown field " + strconv.Quote(field.Name))
 		}
@@ -352,14 +246,14 @@ func (ec *executionContext) _Mutation(ctx context.Context, sel []query.Selection
 	return out
 }
 
-func (ec *executionContext) _Mutation_newDigest(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Mutation_newSubscription(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	args := map[string]interface{}{}
-	var arg0 *NewDigestInput
+	var arg0 *NewSubscriptionInput
 	if tmp, ok := field.Args["input"]; ok {
 		var err error
-		var ptr1 NewDigestInput
+		var ptr1 NewSubscriptionInput
 		if tmp != nil {
-			ptr1, err = UnmarshalNewDigestInput(tmp)
+			ptr1, err = UnmarshalNewSubscriptionInput(tmp)
 			arg0 = &ptr1
 		}
 
@@ -377,7 +271,7 @@ func (ec *executionContext) _Mutation_newDigest(ctx context.Context, field graph
 	defer rctx.Pop()
 
 	resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-		return ec.resolvers.Mutation_newDigest(ctx, args["input"].(*NewDigestInput))
+		return ec.resolvers.Mutation_newSubscription(ctx, args["input"].(*NewSubscriptionInput))
 	})
 	if err != nil {
 		ec.Error(ctx, err)
@@ -386,8 +280,8 @@ func (ec *executionContext) _Mutation_newDigest(ctx context.Context, field graph
 	if resTmp == nil {
 		return graphql.Null
 	}
-	res := resTmp.(Digest)
-	return ec._Digest(ctx, field.Selections, &res)
+	res := resTmp.(Subscription)
+	return ec._SourceSubscription(ctx, field.Selections, &res)
 }
 
 var queryImplementors = []string{"Query"}
@@ -409,10 +303,10 @@ func (ec *executionContext) _Query(ctx context.Context, sel []query.Selection) g
 			out.Values[i] = graphql.MarshalString("Query")
 		case "sources":
 			out.Values[i] = ec._Query_sources(ctx, field)
+		case "subscriptions":
+			out.Values[i] = ec._Query_subscriptions(ctx, field)
 		case "digests":
 			out.Values[i] = ec._Query_digests(ctx, field)
-		case "daily":
-			out.Values[i] = ec._Query_daily(ctx, field)
 		case "__schema":
 			out.Values[i] = ec._Query___schema(ctx, field)
 		case "__type":
@@ -464,7 +358,7 @@ func (ec *executionContext) _Query_sources(ctx context.Context, field graphql.Co
 	})
 }
 
-func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Query_subscriptions(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	ctx = graphql.WithResolverContext(ctx, &graphql.ResolverContext{
 		Object: "Query",
 		Args:   nil,
@@ -480,7 +374,7 @@ func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.Co
 		}()
 
 		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query_digests(ctx)
+			return ec.resolvers.Query_subscriptions(ctx)
 		})
 		if err != nil {
 			ec.Error(ctx, err)
@@ -489,21 +383,21 @@ func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.Co
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.([]Digest)
+		res := resTmp.([]Subscription)
 		arr1 := graphql.Array{}
 		for idx1 := range res {
 			arr1 = append(arr1, func() graphql.Marshaler {
 				rctx := graphql.GetResolverContext(ctx)
 				rctx.PushIndex(idx1)
 				defer rctx.Pop()
-				return ec._Digest(ctx, field.Selections, &res[idx1])
+				return ec._SourceSubscription(ctx, field.Selections, &res[idx1])
 			}())
 		}
 		return arr1
 	})
 }
 
-func (ec *executionContext) _Query_daily(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
+func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	args := map[string]interface{}{}
 	var arg0 *string
 	if tmp, ok := field.Args["date"]; ok {
@@ -535,7 +429,7 @@ func (ec *executionContext) _Query_daily(ctx context.Context, field graphql.Coll
 		}()
 
 		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query_daily(ctx, args["date"].(*string))
+			return ec.resolvers.Query_digests(ctx, args["date"].(*string))
 		})
 		if err != nil {
 			ec.Error(ctx, err)
@@ -544,8 +438,17 @@ func (ec *executionContext) _Query_daily(ctx context.Context, field graphql.Coll
 		if resTmp == nil {
 			return graphql.Null
 		}
-		res := resTmp.(Daily)
-		return ec._Daily(ctx, field.Selections, &res)
+		res := resTmp.([]Digest)
+		arr1 := graphql.Array{}
+		for idx1 := range res {
+			arr1 = append(arr1, func() graphql.Marshaler {
+				rctx := graphql.GetResolverContext(ctx)
+				rctx.PushIndex(idx1)
+				defer rctx.Pop()
+				return ec._Digest(ctx, field.Selections, &res[idx1])
+			}())
+		}
+		return arr1
 	})
 }
 
@@ -668,6 +571,56 @@ func (ec *executionContext) _Source_tags(ctx context.Context, field graphql.Coll
 		}())
 	}
 	return arr1
+}
+
+var sourceSubscriptionImplementors = []string{"SourceSubscription"}
+
+// nolint: gocyclo, errcheck, gas, goconst
+func (ec *executionContext) _SourceSubscription(ctx context.Context, sel []query.Selection, obj *Subscription) graphql.Marshaler {
+	fields := graphql.CollectFields(ec.Doc, sel, sourceSubscriptionImplementors, ec.Variables)
+
+	out := graphql.NewOrderedMap(len(fields))
+	for i, field := range fields {
+		out.Keys[i] = field.Alias
+
+		switch field.Name {
+		case "__typename":
+			out.Values[i] = graphql.MarshalString("SourceSubscription")
+		case "id":
+			out.Values[i] = ec._SourceSubscription_id(ctx, field, obj)
+		case "source":
+			out.Values[i] = ec._SourceSubscription_source(ctx, field, obj)
+		default:
+			panic("unknown field " + strconv.Quote(field.Name))
+		}
+	}
+
+	return out
+}
+
+func (ec *executionContext) _SourceSubscription_id(ctx context.Context, field graphql.CollectedField, obj *Subscription) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "SourceSubscription"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.ID
+	return graphql.MarshalID(res)
+}
+
+func (ec *executionContext) _SourceSubscription_source(ctx context.Context, field graphql.CollectedField, obj *Subscription) graphql.Marshaler {
+	rctx := graphql.GetResolverContext(ctx)
+	rctx.Object = "SourceSubscription"
+	rctx.Args = nil
+	rctx.Field = field
+	rctx.PushField(field.Alias)
+	defer rctx.Pop()
+	res := obj.Source
+	if res == nil {
+		return graphql.Null
+	}
+	return ec._Source(ctx, field.Selections, res)
 }
 
 var __DirectiveImplementors = []string{"__Directive"}
@@ -1396,8 +1349,8 @@ func (ec *executionContext) ___Type_ofType(ctx context.Context, field graphql.Co
 	return ec.___Type(ctx, field.Selections, res)
 }
 
-func UnmarshalNewDigestInput(v interface{}) (NewDigestInput, error) {
-	var it NewDigestInput
+func UnmarshalNewSubscriptionInput(v interface{}) (NewSubscriptionInput, error) {
+	var it NewSubscriptionInput
 	var asMap = v.(map[string]interface{})
 
 	for k, v := range asMap {
@@ -1431,17 +1384,16 @@ func (ec *executionContext) introspectType(name string) *introspection.Type {
 	return introspection.WrapType(t)
 }
 
-var parsedSchema = schema.MustParse(`type Digest {
-    id: ID!
-    #owner: User!
-    source: Source!
-}
-
-type Source {
+var parsedSchema = schema.MustParse(`type Source {
     id: ID!
     name: String!
     description: String!
     tags: [String!]!
+}
+
+type SourceSubscription {
+    id: ID!
+    source: Source!
 }
 
 type Entry {
@@ -1452,32 +1404,24 @@ type Entry {
 	url: String
 }
 
-type Daily {
-	date:    String
-	digests: [DailyDigest!]!
-}
-
-type DailyDigest {
-	digest:  Digest
-	entries: Entry
+type Digest {
+	subscription:  SourceSubscription!
+	entries: [Entry!]!
 }
 
 # Queries
-
 type Query {
     sources(): [Source!]!
-    digests(): [Digest!]!
-    daily(date: String): Daily!
-    #users(input: UsersInput): [User!]!
+    subscriptions(): [SourceSubscription!]!
+    digests(date: String): [Digest!]!
 }
 
 # Mutations
-
 type Mutation {
-    newDigest(input: NewDigestInput): Digest!
+    newSubscription(input: NewSubscriptionInput): SourceSubscription!
 }
 
-input NewDigestInput {
+input NewSubscriptionInput {
     sourceId: String
 }
 `)

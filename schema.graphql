@@ -1,14 +1,13 @@
-type Digest {
-    id: ID!
-    #owner: User!
-    source: Source!
-}
-
 type Source {
     id: ID!
     name: String!
     description: String!
     tags: [String!]!
+}
+
+type SourceSubscription {
+    id: ID!
+    source: Source!
 }
 
 type Entry {
@@ -19,31 +18,23 @@ type Entry {
 	url: String
 }
 
-type Daily {
-	date:    String
-	digests: [DailyDigest!]!
-}
-
-type DailyDigest {
-	digest:  Digest
-	entries: Entry
+type Digest {
+	subscription:  SourceSubscription!
+	entries: [Entry!]!
 }
 
 # Queries
-
 type Query {
     sources(): [Source!]!
-    digests(): [Digest!]!
-    daily(date: String): Daily!
-    #users(input: UsersInput): [User!]!
+    subscriptions(): [SourceSubscription!]!
+    digests(date: String): [Digest!]!
 }
 
 # Mutations
-
 type Mutation {
-    newDigest(input: NewDigestInput): Digest!
+    newSubscription(input: NewSubscriptionInput): SourceSubscription!
 }
 
-input NewDigestInput {
+input NewSubscriptionInput {
     sourceId: String
 }

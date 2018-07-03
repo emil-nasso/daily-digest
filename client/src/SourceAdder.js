@@ -9,7 +9,7 @@ class SourceAdder extends Component {
 
     return (
       <div>
-        <h2>Add sources</h2>
+        <h2>Sources</h2>
         <ul>
           {this.props.sources.map((s) => (<Source key={s.id} source={s} addSourceCallback={this.props.addSourceCallback}/>))}
         </ul>

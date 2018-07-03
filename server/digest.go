@@ -4,28 +4,28 @@ import (
 	"strconv"
 )
 
-// Digest
+// Subscription
 
-type Digest struct {
+type Subscription struct {
 	ID     string
 	Source *Source
 }
 
-type DigestService struct {
-	digests []Digest
+type SubscriptionService struct {
+	subscriptions []Subscription
 }
 
-func (s *DigestService) Create(source *Source) *Digest {
-	d := Digest{
-		ID:     strconv.Itoa(len(s.digests) + 1),
+func (s *SubscriptionService) Create(source *Source) *Subscription {
+	sub := Subscription{
+		ID:     strconv.Itoa(len(s.subscriptions) + 1),
 		Source: source,
 	}
-	s.digests = append(s.digests, d)
-	return &d
+	s.subscriptions = append(s.subscriptions, sub)
+	return &sub
 }
 
-func (s *DigestService) ListAll() []Digest {
-	return s.digests
+func (s *SubscriptionService) ListAll() []Subscription {
+	return s.subscriptions
 }
 
 // Entry
@@ -98,33 +98,25 @@ func (s *EntryService) Seed() {
 
 // Daily
 
-type Daily struct {
-	Date    string
-	Digests []DailyDigest
+type Digest struct {
+	Subscription Subscription
+	Entries      []*Entry
 }
 
-type DailyDigest struct {
-	Digest  Digest
-	Entries []*Entry
+type DigestService struct {
 }
 
-type DailiesService struct {
-}
+func (s *DigestService) Get(date string, subscriptionService *SubscriptionService) []Digest {
+	digests := make([]Digest, 0)
+	subscriptions := subscriptionService.ListAll()
 
-func (s *DailiesService) Get(date string, digestService *DigestService) Daily {
-	dailyDigests := make([]DailyDigest, 0)
-	digests := digestService.ListAll()
-
-	for i := range digests {
-		d := DailyDigest{
-			Digest:  digests[i],
-			Entries: digests[i].Source.EntriesForDate(date),
+	for i := range subscriptions {
+		d := Digest{
+			Subscription: subscriptions[i],
+			Entries:      subscriptions[i].Source.EntriesForDate(date),
 		}
-		dailyDigests = append(dailyDigests, d)
+		digests = append(digests, d)
 	}
 
-	return Daily{
-		Date:    date,
-		Digests: dailyDigests,
-	}
+	return digests
 }
