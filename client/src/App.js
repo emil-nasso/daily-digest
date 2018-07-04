@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import './App.css';
 import GraphQL from './Graphql';
 import SourceAdder from './SourceAdder';
 import Subscriptions from './Subscriptions';
@@ -59,7 +58,7 @@ class App extends Component {
   render() {
     return (
       <div className="App">
-        <header className="App-header">
+        <header className="bg-grey-darker p-8 mb-4 font-xl">
           <h1 className="App-title">Daily-Digest</h1>
         </header>
         <main>

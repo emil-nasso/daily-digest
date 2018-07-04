@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Source from './Source'
 
 class Digests extends Component {
   constructor(props) {
@@ -57,7 +56,7 @@ function Digest({digest}) {
     <div>
       <h4>{digest.subscription.id}: {digest.subscription.source.name}</h4>
       {
-        digest.entries.length == 0 ?
+        digest.entries.length === 0 ?
           <p>Nothing today!</p>
         :
           digest.entries.map((entry) => (<Entry key={entry.id} entry={entry}/>))
