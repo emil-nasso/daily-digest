@@ -61,13 +61,13 @@ class App extends Component {
         <header className="bg-grey-darker p-8 mb-4 font-xl">
           <h1 className="App-title">Daily-Digest</h1>
         </header>
-        <main>
+        <main className="m-2">
           <div className="flex border-b">
-            <div className="mr-8">
-              <Sources sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
-            </div>
             <div>
               <Subscriptions subscriptions={this.state.subscriptions}/>
+            </div>
+            <div className="ml-8">
+              <Sources sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
             </div>
           </div>
           <Digests graphQL={this.graphQL}/>
