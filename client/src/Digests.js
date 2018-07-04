@@ -37,15 +37,19 @@ class Digests extends Component {
   }
   render() {
     return (
-      <div>
-        <h2>Digest</h2>
-        <ul>
-         <li><button onClick={() => {this.loadDigests('2018-01-01')}}>2018-01-01</button></li>
-         <li><button onClick={() => {this.loadDigests('2018-01-02')}}>2018-01-02</button></li>
-         <li><button onClick={() => {this.loadDigests('2018-01-03')}}>2018-01-03</button></li>
-        </ul>
-        <h3>{this.state.date}</h3>
-        {this.state.digests.map((digest)=> (<Digest key={digest.subscription.id} digest={digest}/>))}
+      <div className="flex">
+        <div className="pr-4">
+          <h2>Digest</h2>
+          <ul>
+          <li><button onClick={() => {this.loadDigests('2018-01-01')}}>2018-01-01</button></li>
+          <li><button onClick={() => {this.loadDigests('2018-01-02')}}>2018-01-02</button></li>
+          <li><button onClick={() => {this.loadDigests('2018-01-03')}}>2018-01-03</button></li>
+          </ul>
+        </div>
+        <div>
+          <h3>{this.state.date}</h3>
+          {this.state.digests.map((digest)=> (<Digest key={digest.subscription.id} digest={digest}/>))}
+        </div>
       </div>
     );
   }
@@ -68,7 +72,7 @@ function Digest({digest}) {
 function Entry({entry}) {
   return (
     <div>
-      <a href={entry.url} target='_blank'>{entry.title}</a>
+      <a className="cursor-pointer" href={entry.url} target='_blank'>{entry.title}</a>
       <div>
         {entry.excerpt}
       </div>

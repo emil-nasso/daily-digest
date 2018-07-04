@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
-import Subscription from './Subscription'
 
 class Subscriptions extends Component {
-
   render() {
     if (this.props.subscriptions === undefined) {
       return <div>Loading subscriptions</div>
@@ -16,5 +14,13 @@ class Subscriptions extends Component {
     );
   }
 }
+
+function Subscription({subscription}){
+  return (
+    <div>
+      {subscription.id} - {subscription.source.name}
+    </div>
+  );
+};
 
 export default Subscriptions;

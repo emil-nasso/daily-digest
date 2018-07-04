@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import GraphQL from './Graphql';
-import SourceAdder from './SourceAdder';
+import Sources from './Sources';
 import Subscriptions from './Subscriptions';
 import Digests from './Digests';
 
@@ -62,8 +62,14 @@ class App extends Component {
           <h1 className="App-title">Daily-Digest</h1>
         </header>
         <main>
-          <SourceAdder sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
-          <Subscriptions subscriptions={this.state.subscriptions}/>
+          <div className="flex border-b">
+            <div className="mr-8">
+              <Sources sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
+            </div>
+            <div>
+              <Subscriptions subscriptions={this.state.subscriptions}/>
+            </div>
+          </div>
           <Digests graphQL={this.graphQL}/>
         </main>
       </div>
