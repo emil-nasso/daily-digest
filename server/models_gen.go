@@ -2,6 +2,14 @@
 
 package server
 
+type LoginInput struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
+}
 type NewSubscriptionInput struct {
 	SourceId *string `json:"sourceId"`
+}
+type RegisterInput struct {
+	Username string `json:"username"`
+	Password string `json:"password"`
 }

@@ -33,8 +33,20 @@ type Query {
 # Mutations
 type Mutation {
     newSubscription(input: NewSubscriptionInput): SourceSubscription!
+    register(input: RegisterInput!): String
+    login(input: LoginInput!): String
 }
 
 input NewSubscriptionInput {
     sourceId: String
+}
+
+input RegisterInput {
+    username: String!
+    password: String!
+}
+
+input LoginInput {
+    username: String!
+    password: String!
 }
