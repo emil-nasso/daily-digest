@@ -3,6 +3,7 @@ import GraphQL from './Graphql';
 import Sources from './Sources';
 import Subscriptions from './Subscriptions';
 import Digests from './Digests';
+import bus from './eventService'
 
 class App extends Component {
 
@@ -13,46 +14,41 @@ class App extends Component {
     this.state = {
       message: 'hello world',
       sources: undefined,
-      subscriptions: undefined
+      subscriptions: undefined,
+      digests: [],
+      selectedDigestsDate: undefined,
     };
 
     this.loadSources();
     this.loadSubscriptions();
   }
 
+  componentDidMount(){
+    bus.on('add-source', (id) => {
+      this.createSource(id).then(() => {this.loadSubscriptions()});
+    });
+    bus.on('select-digests', (date) => {
+      this.loadDigests(date);
+    });
+  }
+
   loadSources(){
-    this.graphQL.query(`query AllSources{
-      sources {
-        id
-        name
-        description
-        tags
-      }
-    }`).then((data) => this.setState({sources: data.data.sources}));
+    this.graphQL.loadSources().then((data) => this.setState({sources: data.data.sources}));
+  }
+
+  loadDigests(date) {
+    this.setState({selectedDigestsDate: date})
+    this.graphQL.loadDigests(date).then((result) => {
+      this.setState({digests: result.data.digests});
+    });
   }
   
   loadSubscriptions() {
-    this.graphQL.query(`query AllSubscriptions {
-      subscriptions {
-        id
-        source{
-          id
-          name
-          description
-          tags
-        }
-      }
-    }`).then((data) => this.setState({subscriptions: data.data.subscriptions}));
+    this.graphQL.loadSubscriptions().then((data) => this.setState({subscriptions: data.data.subscriptions}));
   }
 
-  addSource(id) {
-    this.graphQL.query(`mutation CreateDigest ($id: String!) {
-      newSubscription(input: {
-        sourceId: $id
-      }) {
-        id
-      }
-    }`, { id }).then(() => {this.loadSubscriptions()})
+  createSource(id) {
+    return this.graphQL.createSource(id);
   }
 
   render() {
@@ -67,10 +63,10 @@ class App extends Component {
               <Subscriptions subscriptions={this.state.subscriptions}/>
             </div>
             <div className="ml-8">
-              <Sources sources={this.state.sources} addSourceCallback={this.addSource.bind(this)}/>
+              <Sources sources={this.state.sources}/>
             </div>
           </div>
-          <Digests graphQL={this.graphQL}/>
+          <Digests selectedDate={this.state.selectedDigestsDate} digests={this.state.digests}/>
         </main>
       </div>
     );

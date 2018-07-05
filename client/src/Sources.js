@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import bus from './eventService'
 
 class Sources extends Component {
 
@@ -32,7 +33,6 @@ class Sources extends Component {
                 key={s.id}
                 source={s}
                 expanded={s.id === this.state.expanded}
-                addSourceCallback={this.props.addSourceCallback}
                 expandCallback={this.toggleExpanded.bind(this)}
               />
           ))}
@@ -76,7 +76,9 @@ function SourceTag({tag}){
 
 function AddSourceButton({source, addSourceCallback}){
   return (
-    <button className="border shadow rounded p-1 hover:bg-blue-dark hover:text-white" onClick={() => {addSourceCallback(source.id)}}>
+    <button className="border shadow rounded p-1 hover:bg-blue-dark hover:text-white" onClick={() => {
+        bus.emit('add-source', source.id);
+      }}>
         Add {source.name}
     </button>
   );

@@ -1,54 +1,21 @@
 import React, { Component } from 'react';
+import bus from './eventService';
 
 class Digests extends Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      date: undefined,
-      digests: []
-    };
-  }
-  loadDigests(date) {
-    let query = `query GetDigest($date: String!) {
-      digests(date:$date){
-        subscription{
-          id
-          source {
-            id
-            name
-            description
-          }
-        }
-        entries{
-          id
-          publishedAt
-          title
-          excerpt
-          url
-        }
-      }
-    }
-    `;
-
-    this.setState({date})
-    this.props.graphQL.query(query, {date}).then((result) => {
-      this.setState({digests: result.data.digests});
-    });
-  }
   render() {
     return (
       <div className="flex">
         <div className="pr-4">
           <h2>Digest</h2>
           <ul>
-          <li><button onClick={() => {this.loadDigests('2018-01-01')}}>2018-01-01</button></li>
-          <li><button onClick={() => {this.loadDigests('2018-01-02')}}>2018-01-02</button></li>
-          <li><button onClick={() => {this.loadDigests('2018-01-03')}}>2018-01-03</button></li>
+          <li><button onClick={() => {bus.emit('select-digests','2018-01-01')}}>2018-01-01</button></li>
+          <li><button onClick={() => {bus.emit('select-digests','2018-01-02')}}>2018-01-02</button></li>
+          <li><button onClick={() => {bus.emit('select-digests','2018-01-03')}}>2018-01-03</button></li>
           </ul>
         </div>
         <div>
-          <h3>{this.state.date}</h3>
-          {this.state.digests.map((digest)=> (<Digest key={digest.subscription.id} digest={digest}/>))}
+          <h3>{this.props.selectedDigestsDate}</h3>
+          {this.props.digests.map((digest)=> (<Digest key={digest.subscription.id} digest={digest}/>))}
         </div>
       </div>
     );
