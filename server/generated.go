@@ -21,7 +21,7 @@ type Resolvers interface {
 	Mutation_newSubscription(ctx context.Context, input *NewSubscriptionInput) (Subscription, error)
 	Query_sources(ctx context.Context) ([]Source, error)
 	Query_subscriptions(ctx context.Context) ([]Subscription, error)
-	Query_digests(ctx context.Context, date *string) ([]Digest, error)
+	Query_digests(ctx context.Context, date string) ([]Digest, error)
 }
 
 type executableSchema struct {
@@ -399,15 +399,10 @@ func (ec *executionContext) _Query_subscriptions(ctx context.Context, field grap
 
 func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.CollectedField) graphql.Marshaler {
 	args := map[string]interface{}{}
-	var arg0 *string
+	var arg0 string
 	if tmp, ok := field.Args["date"]; ok {
 		var err error
-		var ptr1 string
-		if tmp != nil {
-			ptr1, err = graphql.UnmarshalString(tmp)
-			arg0 = &ptr1
-		}
-
+		arg0, err = graphql.UnmarshalString(tmp)
 		if err != nil {
 			ec.Error(ctx, err)
 			return graphql.Null
@@ -429,7 +424,7 @@ func (ec *executionContext) _Query_digests(ctx context.Context, field graphql.Co
 		}()
 
 		resTmp, err := ec.ResolverMiddleware(ctx, func(ctx context.Context) (interface{}, error) {
-			return ec.resolvers.Query_digests(ctx, args["date"].(*string))
+			return ec.resolvers.Query_digests(ctx, args["date"].(string))
 		})
 		if err != nil {
 			ec.Error(ctx, err)
@@ -1413,7 +1408,7 @@ type Digest {
 type Query {
     sources(): [Source!]!
     subscriptions(): [SourceSubscription!]!
-    digests(date: String): [Digest!]!
+    digests(date: String!): [Digest!]!
 }
 
 # Mutations

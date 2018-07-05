@@ -69,6 +69,6 @@ func (app *App) Query_subscriptions(ctx context.Context) ([]server.Subscription,
 	return subscriptionService.ListAll(), nil
 }
 
-func (app *App) Query_digests(ctx context.Context, date *string) ([]server.Digest, error) {
-	return digestService.Get(*date, &subscriptionService), nil
+func (app *App) Query_digests(ctx context.Context, date string) ([]server.Digest, error) {
+	return digestService.Get(date, &subscriptionService), nil
 }

@@ -27,7 +27,7 @@ type Digest {
 type Query {
     sources(): [Source!]!
     subscriptions(): [SourceSubscription!]!
-    digests(date: String): [Digest!]!
+    digests(date: String!): [Digest!]!
 }
 
 # Mutations
