@@ -1,6 +1,6 @@
 {
-    "Source" : "github.com/emil-nasso/daily-digest/server.Source",
-    "SourceSubscription" : "github.com/emil-nasso/daily-digest/server.Subscription",
-    "Entry" : "github.com/emil-nasso/daily-digest/server.Entry",
-    "Digest" : "github.com/emil-nasso/daily-digest/server.Digest"
+    "Source" : "github.com/emil-nasso/daily-digest/daily_digest.Source",
+    "SourceSubscription" : "github.com/emil-nasso/daily-digest/daily_digest.Subscription",
+    "Entry" : "github.com/emil-nasso/daily-digest/daily_digest.Entry",
+    "Digest" : "github.com/emil-nasso/daily-digest/daily_digest.Digest"
 }

@@ -5,14 +5,13 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/emil-nasso/daily-digest/daily_digest"
 	_ "github.com/emil-nasso/daily-digest/plugins"
-	"github.com/emil-nasso/daily-digest/server"
-
 	"github.com/vektah/gqlgen/handler"
 )
 
 func main() {
-	app := server.NewApp()
+	app := daily_digest.NewApp()
 	app.Seed()
 
 	http.Handle("/", handler.Playground("Daily-Digest", "/graphql"))

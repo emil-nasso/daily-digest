@@ -1,4 +1,4 @@
-package server
+package daily_digest
 
 import (
 	"strconv"
