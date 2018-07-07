@@ -9,23 +9,30 @@ import (
 type Subscription struct {
 	ID     string
 	Source *Source
+	user   *User
 }
 
 type SubscriptionService struct {
 	subscriptions []Subscription
 }
 
-func (s *SubscriptionService) Create(source *Source) *Subscription {
+func (s *SubscriptionService) Create(user *User, source *Source) *Subscription {
 	sub := Subscription{
 		ID:     strconv.Itoa(len(s.subscriptions) + 1),
 		Source: source,
+		user:   user,
 	}
+	user.subscriptions = append(user.subscriptions, &sub)
 	s.subscriptions = append(s.subscriptions, sub)
 	return &sub
 }
 
-func (s *SubscriptionService) ListAll() []Subscription {
-	return s.subscriptions
+func (s *SubscriptionService) ListAll(user *User) []Subscription {
+	var subs []Subscription
+	for _, s := range user.subscriptions {
+		subs = append(subs, *s)
+	}
+	return subs
 }
 
 // Entry
@@ -106,9 +113,9 @@ type Digest struct {
 type DigestService struct {
 }
 
-func (s *DigestService) Get(date string, subscriptionService *SubscriptionService) []Digest {
+func (s *DigestService) Get(user *User, date string, subscriptionService *SubscriptionService) []Digest {
 	digests := make([]Digest, 0)
-	subscriptions := subscriptionService.ListAll()
+	subscriptions := subscriptionService.ListAll(user)
 
 	for i := range subscriptions {
 		d := Digest{

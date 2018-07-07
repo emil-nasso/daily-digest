@@ -60,11 +60,16 @@ func (app *App) Query_sources(ctx context.Context) ([]Source, error) {
 }
 
 func (app *App) Mutation_newSubscription(ctx context.Context, input *NewSubscriptionInput) (Subscription, error) {
+	user := currentUser(ctx)
+	if user == nil {
+		return Subscription{}, app.accessDenied
+	}
+
 	source := GetById(*input.SourceId)
 	if source == nil {
 		return Subscription{}, errors.New("Invalid sourceId")
 	}
-	return *app.subscriptionService.Create(source), nil
+	return *app.subscriptionService.Create(user, source), nil
 }
 
 func (app *App) Query_subscriptions(ctx context.Context) ([]Subscription, error) {
@@ -72,11 +77,15 @@ func (app *App) Query_subscriptions(ctx context.Context) ([]Subscription, error)
 	if user == nil {
 		return []Subscription{}, app.accessDenied
 	}
-	return app.subscriptionService.ListAll(), nil
+	return app.subscriptionService.ListAll(user), nil
 }
 
 func (app *App) Query_digests(ctx context.Context, date string) ([]Digest, error) {
-	return app.digestService.Get(date, &app.subscriptionService), nil
+	user := currentUser(ctx)
+	if user == nil {
+		return []Digest{}, app.accessDenied
+	}
+	return app.digestService.Get(user, date, &app.subscriptionService), nil
 }
 
 func (app *App) Mutation_register(ctx context.Context, input RegisterInput) (*string, error) {
