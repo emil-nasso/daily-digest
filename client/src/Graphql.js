@@ -1,4 +1,7 @@
 class GraphQL {
+    constructor(sessionKey) {
+      this.sessionKey = sessionKey;
+    }
     url =  'http://localhost:8080/graphql'
 
     query(query, variables){
@@ -7,10 +10,20 @@ class GraphQL {
             headers: {
               'Content-Type': 'application/json',
               'Accept': 'application/json',
+              'Authorization': `Bearer ${this.sessionKey}`
             },
             body: JSON.stringify({query, variables})
           })
-            .then(r => r.json());
+            .then(r => r.json())
+            .then(r => {
+                if (r.errors) {
+                  let error = new Error("GraphQL error")
+                  error.details = r.errors
+                  throw error;
+                }
+                return r;
+            })
+          ;
     }
 
     loadSources(){
@@ -72,6 +85,12 @@ class GraphQL {
           id
         }
       }`, { id })
+    }
+
+    registerUser(username, password) {
+      return this.query(`mutation Register ($username: String!, $password: String!){
+        register(input:{username: $username, password: $password})
+      }`, { username, password })
     }
 }
 
