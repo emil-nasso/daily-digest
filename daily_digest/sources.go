@@ -14,6 +14,10 @@ type Source struct {
 	entries     []*Entry
 }
 
+type scraper func() string
+
+var sources []*Source
+
 func (s *Source) EntriesForDate(date string) []*Entry {
 	entries := make([]*Entry, 0)
 	for _, entry := range s.entries {
@@ -28,16 +32,12 @@ func (s *Source) AddEntry(entry *Entry) {
 	s.entries = append(s.entries, entry)
 }
 
-type scraper func() string
-
-var sources []*Source
-
 // Get all initialized sources
-func Get() []*Source {
+func GetSources() []*Source {
 	return sources
 }
 
-func GetById(id string) *Source {
+func GetSourceById(id string) *Source {
 	for _, s := range sources {
 		if s.ID == id {
 			return s

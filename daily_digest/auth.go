@@ -4,6 +4,8 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
+
+	"github.com/emil-nasso/daily-digest/util"
 )
 
 // TODO: Really really need to hash this password, eventually and extract the sessions and invalidate and avoid collisions
@@ -14,25 +16,27 @@ type User struct {
 	sessionKeys   []string
 }
 
-type AuthService struct {
-	users []User
+var users []User
+
+func init() {
+	users = make([]User, 0)
 }
 
-func (s *AuthService) Register(username, password string) {
+func RegisterUser(username, password string) {
 	user := User{
 		username:      username,
 		password:      password,
 		subscriptions: make([]*Subscription, 0),
 		sessionKeys:   make([]string, 0),
 	}
-	s.users = append(s.users, user)
+	users = append(users, user)
 }
 
-func (s *AuthService) Login(username, password string) (*string, error) {
+func Login(username, password string) (*string, error) {
 	var user *User
-	for i, u := range s.users {
+	for i, u := range users {
 		if u.username == username && u.password == password {
-			user = &s.users[i]
+			user = &users[i]
 			break
 		}
 	}
@@ -52,8 +56,8 @@ func (s *AuthService) Login(username, password string) (*string, error) {
 	return &sessionKey, nil
 }
 
-func (s *AuthService) UserForSession(sessionKey string) *User {
-	for _, user := range s.users {
+func GetUserForSession(sessionKey string) *User {
+	for _, user := range users {
 		for _, s := range user.sessionKeys {
 			if sessionKey == s {
 				return &user
@@ -61,4 +65,8 @@ func (s *AuthService) UserForSession(sessionKey string) *User {
 		}
 	}
 	return nil
+}
+
+func DebugUsers() {
+	util.Dd(users)
 }
