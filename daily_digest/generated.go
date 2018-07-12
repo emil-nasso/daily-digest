@@ -13,8 +13,14 @@ import (
 	schema "github.com/vektah/gqlgen/neelance/schema"
 )
 
+// MakeExecutableSchema creates an ExecutableSchema from the Resolvers interface.
 func MakeExecutableSchema(resolvers Resolvers) graphql.ExecutableSchema {
 	return &executableSchema{resolvers: resolvers}
+}
+
+// NewExecutableSchema creates an ExecutableSchema from the ResolverRoot interface.
+func NewExecutableSchema(resolvers ResolverRoot) graphql.ExecutableSchema {
+	return MakeExecutableSchema(shortMapper{r: resolvers})
 }
 
 type Resolvers interface {
@@ -24,6 +30,49 @@ type Resolvers interface {
 	Query_sources(ctx context.Context) ([]Source, error)
 	Query_subscriptions(ctx context.Context) ([]Subscription, error)
 	Query_digests(ctx context.Context, date string) ([]Digest, error)
+}
+
+type ResolverRoot interface {
+	Mutation() MutationResolver
+	Query() QueryResolver
+}
+type MutationResolver interface {
+	NewSubscription(ctx context.Context, input *NewSubscriptionInput) (Subscription, error)
+	Register(ctx context.Context, input RegisterInput) (*string, error)
+	Login(ctx context.Context, input LoginInput) (*string, error)
+}
+type QueryResolver interface {
+	Sources(ctx context.Context) ([]Source, error)
+	Subscriptions(ctx context.Context) ([]Subscription, error)
+	Digests(ctx context.Context, date string) ([]Digest, error)
+}
+
+type shortMapper struct {
+	r ResolverRoot
+}
+
+func (s shortMapper) Mutation_newSubscription(ctx context.Context, input *NewSubscriptionInput) (Subscription, error) {
+	return s.r.Mutation().NewSubscription(ctx, input)
+}
+
+func (s shortMapper) Mutation_register(ctx context.Context, input RegisterInput) (*string, error) {
+	return s.r.Mutation().Register(ctx, input)
+}
+
+func (s shortMapper) Mutation_login(ctx context.Context, input LoginInput) (*string, error) {
+	return s.r.Mutation().Login(ctx, input)
+}
+
+func (s shortMapper) Query_sources(ctx context.Context) ([]Source, error) {
+	return s.r.Query().Sources(ctx)
+}
+
+func (s shortMapper) Query_subscriptions(ctx context.Context) ([]Subscription, error) {
+	return s.r.Query().Subscriptions(ctx)
+}
+
+func (s shortMapper) Query_digests(ctx context.Context, date string) ([]Digest, error) {
+	return s.r.Query().Digests(ctx, date)
 }
 
 type executableSchema struct {

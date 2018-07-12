@@ -1,0 +1,14 @@
+schema: schema.graphql
+exec:
+  filename: daily_digest/generated.go
+model:
+  filename: daily_digest/models_gen.go
+models:
+  Digest:
+    model: github.com/emil-nasso/daily-digest/daily_digest.Digest
+  Entry:
+    model: github.com/emil-nasso/daily-digest/daily_digest.Entry
+  Source:
+    model: github.com/emil-nasso/daily-digest/daily_digest.Source
+  SourceSubscription:
+    model: github.com/emil-nasso/daily-digest/daily_digest.Subscription
