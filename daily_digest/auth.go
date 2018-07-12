@@ -4,8 +4,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"errors"
-
-	"github.com/emil-nasso/daily-digest/util"
 )
 
 // TODO: Really really need to hash this password, eventually and extract the sessions and invalidate and avoid collisions
@@ -57,16 +55,12 @@ func Login(username, password string) (*string, error) {
 }
 
 func GetUserForSession(sessionKey string) *User {
-	for _, user := range users {
+	for userIndex, user := range users {
 		for _, s := range user.sessionKeys {
 			if sessionKey == s {
-				return &user
+				return &users[userIndex]
 			}
 		}
 	}
 	return nil
-}
-
-func DebugUsers() {
-	util.Dd(users)
 }

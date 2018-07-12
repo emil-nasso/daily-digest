@@ -41,7 +41,6 @@ func (app *App) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 	// Handle request
 	handler.GraphQL(daily_digest.MakeExecutableSchema(app))(w, r)
-	daily_digest.DebugUsers()
 }
 
 func (app *App) Query_sources(ctx context.Context) ([]daily_digest.Source, error) {
