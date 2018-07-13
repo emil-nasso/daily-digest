@@ -36,19 +36,10 @@ class App extends Component {
       this.loadDigests(date);
     });
     bus.on('login', (credentials) => {
-      console.log('login', credentials);
+      this.login(credentials)
     });
     bus.on('register', (credentials) => {
-      this.graphQL.registerUser(credentials.username, credentials.password).then((data) => {
-        let sessionKey = data.data.register;
-        this.graphQL = new GraphQL(sessionKey);
-        this.loadSubscriptions();
-        this.storage.setItem("sessionKey", sessionKey);
-        this.setState({
-          sessionKey,
-          page: "settings"
-        })
-      }, this.handleError.bind(this))
+      this.registerUser(credentials);
     });
   }
 
@@ -88,6 +79,41 @@ class App extends Component {
     );
   }
 
+  registerUser(credentials){
+    this.graphQL.registerUser(credentials.username, credentials.password).then(
+      (data) => {
+        this.setSessionKey(data.data.register)
+      },
+      this.handleError.bind(this)
+    )
+  }
+
+  login(credentials){
+    this.graphQL.login(credentials.username, credentials.password).then(
+      (data) => {
+        bus.emit('login.successful');
+        this.setSessionKey(data.data.login);
+      },
+      () => {
+        bus.emit('login.failed')
+      }
+    );
+  }
+
+  logout() {
+    this.setSessionKey("")
+  }
+
+  setSessionKey(sessionKey){
+    this.graphQL = new GraphQL(sessionKey);
+    this.loadSubscriptions();
+    this.storage.setItem("sessionKey", sessionKey);
+    this.setState({
+      sessionKey,
+      page: "settings"
+    })
+  }
+
   createSource(id) {
     return this.graphQL.createSource(id);
   }
@@ -99,17 +125,18 @@ class App extends Component {
       case "settings":
         contents = <SettingsPage subscriptions={this.state.subscriptions} sources={this.state.sources} selectedDigestsDate={this.state.selectedDigestsDate} digests={this.state.digests}/>;
         break;
-        case "registration":
-          contents = <LoginPage/>;
-          break;
-        default:
-          break;
+      case "registration":
+        contents = <LoginPage/>;
+        break;
+      default:
+        break;
     }
 
     return (
       <div className="App">
         <header className="bg-grey-darker p-8 mb-4 font-xl">
           <h1 className="App-title">Daily-Digest</h1>
+          { this.state.sessionKey ? <button className="border border-black shadow rounded hover:bg-white p-1" onClick={this.logout.bind(this)}>Log out</button> : ""}
         </header>
         {contents}
       </div>

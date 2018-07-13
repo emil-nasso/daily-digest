@@ -92,6 +92,12 @@ class GraphQL {
         register(input:{username: $username, password: $password})
       }`, { username, password })
     }
+
+    login(username, password) {
+      return this.query(`mutation Login ($username: String!, $password: String!){
+        login(input:{username: $username, password: $password})
+      }`, { username, password })
+    }
 }
 
 export default GraphQL;
