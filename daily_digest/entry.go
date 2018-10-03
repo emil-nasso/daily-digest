@@ -1,11 +1,32 @@
 package daily_digest
 
+import (
+	"time"
+
+	uuid "github.com/satori/go.uuid"
+)
+
 type Entry struct {
 	ID          string
 	PublishedAt string
 	Title       string
 	Excerpt     string
 	URL         string
+}
+
+func generateUUID() string {
+	return uuid.Must(uuid.NewV4()).String()
+}
+
+func NewEntryForCurrentTime(title, description, url string) *Entry {
+	currentDate := time.Now().Format("2006-01-02")
+	return &Entry{
+		ID:          generateUUID(),
+		PublishedAt: currentDate,
+		Title:       title,
+		Excerpt:     description,
+		URL:         url,
+	}
 }
 
 func SeedEntries() {

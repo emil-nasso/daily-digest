@@ -2,19 +2,24 @@ package daily_digest
 
 import (
 	"fmt"
+	"time"
 )
 
 // Source represents a digest source
 type Source struct {
-	ID          string
-	Name        string
-	Description string
-	Tags        []string
-	scraper     scraper
-	entries     []*Entry
+	ID               string
+	Name             string
+	Description      string
+	Tags             []string
+	scraper          scraper
+	scrapingInterval time.Duration
+	persister        persister
+	entries          []*Entry
 }
 
-type scraper func() string
+type scraper func() []*Entry
+
+type persister func([]*Entry)
 
 var sources []*Source
 
@@ -46,14 +51,16 @@ func GetSourceById(id string) *Source {
 	return nil
 }
 
-func RegisterSource(id, name, description string, tags []string, scraper scraper) {
+func RegisterSource(id, name, description string, tags []string, scraper scraper, scrapingInterval time.Duration, persister persister) {
 	fmt.Printf("Registering source: %s\n", id)
 	source := &Source{
-		ID:          id,
-		Name:        name,
-		Description: description,
-		Tags:        tags,
-		scraper:     scraper,
+		ID:               id,
+		Name:             name,
+		Description:      description,
+		Tags:             tags,
+		scraper:          scraper,
+		scrapingInterval: scrapingInterval,
+		persister:        persister,
 	}
 	sources = append(sources, source)
 }
