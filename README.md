@@ -1,3 +1,2 @@
-# This is all just experimental
-
+Moved to <https://gitlab.com/the.nasso/daily-digest>
 
